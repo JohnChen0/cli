@@ -15,7 +15,8 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 OLDPATH="$PATH"
 
-source "$DIR/common/_prettyprint.sh"
+REPOROOT="$DIR/../.."
+source "$REPOROOT/scripts/common/_prettyprint.sh"
 
 while [[ $# > 0 ]]; do
     lowerI="$(echo $1 | awk '{print tolower($0)}')"
