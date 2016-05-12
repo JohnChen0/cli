@@ -79,13 +79,13 @@ while read line; do
         IFS='=' read -ra splat <<< "$line"
         export ${splat[0]}="${splat[1]}"
     fi
-done < "$DIR/../branchinfo.txt"
+done < "$REPOROOT/branchinfo.txt"
 
 # Use a repo-local install directory (but not the artifacts directory because that gets cleaned a lot
 [ -z "$DOTNET_INSTALL_DIR" ] && export DOTNET_INSTALL_DIR=$DIR/../.dotnet_stage0/$(uname)
 [ -d $DOTNET_INSTALL_DIR ] || mkdir -p $DOTNET_INSTALL_DIR
 
-$DIR/obtain/dotnet-install.sh --channel $CHANNEL --verbose
+$REPOROOT/scripts/obtain/dotnet-install.sh --channel $CHANNEL --verbose
 
 # Put stage 0 on the PATH (for this shell only)
 PATH="$DOTNET_INSTALL_DIR:$PATH"
