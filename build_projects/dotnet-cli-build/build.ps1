@@ -56,7 +56,8 @@ if (!(Test-Path $env:DOTNET_INSTALL_DIR))
 
 # Install a stage 0
 Write-Host "Installing .NET Core CLI Stage 0 from branchinfo channel"
-& "$RepoRoot\scripts\obtain\dotnet-install.ps1" -Channel $env:CHANNEL -Architecture $Architecture -Verbose
+& "$RepoRoot\scribuild.pts\obtain\dotnet-install.ps1" -Channel $env:CHANNEL -Architecture $Architecture -Verbose
+if($LASTEXITCODE -ne 0) { throw "Failed to install stage0" }
 
 # Put the stage0 on the path
 $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
