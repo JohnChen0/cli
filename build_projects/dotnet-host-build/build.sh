@@ -100,24 +100,24 @@ fi
 # Restore the build scripts
 echo "Restoring Build Script projects..."
 (
-    cd $DIR
+    cd "$DIR/.."
     dotnet restore --infer-runtimes
 )
 
 # Build the builder
 echo "Compiling Build Scripts..."
-dotnet publish "$DIR/dotnet-cli-build" -o "$DIR/dotnet-cli-build/bin" --framework netstandardapp1.5
+dotnet publish "$DIR" -o "$DIR/bin" --framework netcoreapp1.0
 
 export PATH="$OLDPATH"
 # Run the builder
 echo "Invoking Build Scripts..."
 echo "Configuration: $CONFIGURATION"
 
-if [ -f "$DIR/dotnet-cli-build/bin/dotnet-cli-build" ]; then
-    $DIR/dotnet-cli-build/bin/dotnet-cli-build ${targets[@]}
+if [ -f "$DIR/bin/dotnet-host-build" ]; then
+    $DIR/bin/dotnet-host-build ${targets[@]}
     exit $?
 else
     # We're on an older CLI. This is temporary while Ubuntu and CentOS VSO builds are stalled.
-    $DIR/dotnet-cli-build/bin/Debug/dnxcore50/dotnet-cli-build "${targets[@]}"
+    $DIR/bin/Debug/dnxcore50/dotnet-host-build "${targets[@]}"
     exit $?
 fi
