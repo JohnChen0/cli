@@ -26,6 +26,12 @@ namespace Microsoft.DotNet.Cli.Build
 
         private string GetCrossgenPathForVersion()
         {
+            string coreclrPath = Environment.GetEnvironmentVariable("coreclrPath");
+            if (coreclrPath != null)
+            {
+                return Path.Combine(coreclrPath, $"crossgen{Constants.ExeSuffix}");
+            }
+
             string arch = RuntimeEnvironment.RuntimeArchitecture;
             string packageId;
             if (CurrentPlatform.IsWindows)
@@ -72,6 +78,23 @@ namespace Microsoft.DotNet.Cli.Build
             }
 
             string sharedFxPath = c.BuildContext.Get<string>("SharedFrameworkPath");
+
+            string coreclrPath = Environment.GetEnvironmentVariable("coreclrPath");
+            if (coreclrPath != null)
+            {
+                string[] files = new string[]
+                {
+                    "mscorlib.ni.dll",
+                    $"{Constants.DynamicLibPrefix}coreclr{Constants.DynamicLibSuffix}",
+                    $"{Constants.DynamicLibPrefix}mscordaccore{Constants.DynamicLibSuffix}",
+                    $"{Constants.DynamicLibPrefix}mscordbi{Constants.DynamicLibSuffix}",
+                    $"{Constants.DynamicLibPrefix}mscorrc{Constants.DynamicLibSuffix}",
+                    $"{Constants.DynamicLibPrefix}mscorrc.debug{Constants.DynamicLibSuffix}",
+                    $"{Constants.DynamicLibPrefix}clrjit{Constants.DynamicLibSuffix}"
+                };
+                foreach (string file in files)
+                    File.Copy(Path.Combine(coreclrPath, file), Path.Combine(sharedFxPath, file), true);
+            }
 
             // HACK
             // The input directory can be a portable FAT app (example the CLI itself).
