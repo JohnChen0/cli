@@ -84,7 +84,10 @@ namespace Microsoft.DotNet.Cli.Build
             {
                 string[] files = new string[]
                 {
+                    "mscorlib.dll",
                     "mscorlib.ni.dll",
+                    "System.Private.CoreLib.dll",
+                    "System.Private.CoreLib.ni.dll",
                     $"{Constants.DynamicLibPrefix}coreclr{Constants.DynamicLibSuffix}",
                     $"{Constants.DynamicLibPrefix}mscordaccore{Constants.DynamicLibSuffix}",
                     $"{Constants.DynamicLibPrefix}mscordbi{Constants.DynamicLibSuffix}",
@@ -111,14 +114,14 @@ namespace Microsoft.DotNet.Cli.Build
             var env = new Dictionary<string, string>()
             {
                 // disable partial ngen
-                { "COMPLUS_ZapDisable", "0" }
+                { "COMPLUS_PartialNGen", "0" }
             };
 
             foreach (var file in Directory.GetFiles(pathToAssemblies))
             {
                 string fileName = Path.GetFileName(file);
 
-                if (fileName == "mscorlib.dll" || fileName == "mscorlib.ni.dll" || !PEUtils.HasMetadata(file))
+                if (fileName == "mscorlib.dll" || fileName == "mscorlib.ni.dll" || fileName == "System.Private.CoreLib.dll" || fileName == "System.Private.CoreLib.ni.dll" || !PEUtils.HasMetadata(file))
                 {
                     continue;
                 }
